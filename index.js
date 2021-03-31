@@ -19,7 +19,7 @@ Navigation.events().registerAppLaunchedListener(() => {
               options: {
                 topBar: {
                   title: {
-                    text: 'Settings',
+                    text: 'Countries',
                   },
                 },
               },
