@@ -15,9 +15,10 @@ export const countryState = (
 ): ICountryState => {
   switch (action.type) {
     case CountryActionTypeEnum.ADD_COUNTRY: {
+      console.log(state.countries.length, action.countries.length);
       return {
         ...state,
-        skip: state.skip + 1,
+        skip: state.skip + action.countries.length,
         countries: state.countries.concat(action.countries),
       };
     }

@@ -8,3 +8,7 @@ const selectCountryState = (state: IRootState): ICountryState => {
 export const selectCountries = (state: IRootState): ICountry[] => {
   return selectCountryState(state).countries;
 };
+
+export const selectSkipCountry = (state: IRootState): number => {
+  return selectCountryState(state).skip;
+};

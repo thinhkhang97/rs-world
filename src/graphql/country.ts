@@ -9,8 +9,8 @@ export const client = new ApolloClient({
 });
 
 const GET_COUNTRY = gql`
-  query getCountry {
-    countries(limit: 10, skip: 1) {
+  query getCountry($limit: Int, $skip: Int) {
+    countries(limit: $limit, skip: $skip) {
       id
       name
       alpha2Code
@@ -46,7 +46,10 @@ export const getCountries = async (
   skip: number,
 ): Promise<ICountry[]> => {
   try {
-    const res = await client.query({query: GET_COUNTRY});
+    const res = await client.query({
+      query: GET_COUNTRY,
+      variables: {limit, skip},
+    });
     const {countries} = res.data as {countries: ICountryResponse[]};
     return countries.map(
       (c: ICountryResponse): ICountry => ({

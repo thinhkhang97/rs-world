@@ -1,22 +1,40 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet} from 'react-native';
 import {NavigationFunctionComponent} from 'react-native-navigation';
 import {ICountry} from '../types/country';
 import {CountryItem} from '../components/country-item';
 import {COLOR} from '../assets/themes';
 import {useSelector, useDispatch} from 'react-redux';
-import {selectCountries} from '../selectors/country';
+import {selectCountries, selectSkipCountry} from '../selectors/country';
 import {getCountryAction} from '../actions/country';
+
+const NUMBER_COUNTRY_LOADING = 10;
 
 export const CountryList: NavigationFunctionComponent = () => {
   const countries = useSelector(selectCountries);
+  const skip = useSelector(selectSkipCountry);
   const dispatch = useDispatch();
+  let reachEnd = false;
 
   useEffect(() => {
-    dispatch(getCountryAction(10, 0));
+    dispatch(getCountryAction(NUMBER_COUNTRY_LOADING, skip));
   }, []);
 
-  const renderItem = ({item}: {item: ICountry}) => <CountryItem data={item} />;
+  const handleReachEnd = () => {
+    reachEnd = true;
+  };
+
+  const handleMomentumEnd = () => {
+    if (reachEnd) {
+      dispatch(getCountryAction(NUMBER_COUNTRY_LOADING, skip));
+      reachEnd = false;
+    }
+  };
+
+  const renderItem = useCallback(
+    ({item}: {item: ICountry}) => <CountryItem data={item} />,
+    [],
+  );
 
   const keyExtract = (item: ICountry) => `countries_id_${item.id}`;
 
@@ -28,6 +46,9 @@ export const CountryList: NavigationFunctionComponent = () => {
         renderItem={renderItem}
         keyExtractor={keyExtract}
         extraData={countries}
+        onEndReached={handleReachEnd}
+        onEndReachedThreshold={0.5}
+        onMomentumScrollEnd={handleMomentumEnd}
       />
     </SafeAreaView>
   );

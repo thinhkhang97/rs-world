@@ -1,8 +1,8 @@
 import {CountryActionType, CountryActionTypeEnum} from './type/country';
-import {ICountry} from 'types/country';
+import {ICountry} from '../types/country';
 
 export const getCountryAction = (
-  limit: number,
+  limit: number = 10,
   skip: number,
 ): CountryActionType => {
   return {
