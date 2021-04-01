@@ -1,16 +1,17 @@
 import React, {useEffect, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet} from 'react-native';
-import {NavigationFunctionComponent} from 'react-native-navigation';
+import {NavigationFunctionComponent, Navigation} from 'react-native-navigation';
 import {ICountry} from '../types/country';
 import {CountryItem} from '../components/country-item';
 import {COLOR} from '../assets/themes';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectCountries, selectSkipCountry} from '../selectors/country';
 import {getCountryAction} from '../actions/country';
+import {SCREEN_NAME} from '../navigations';
 
 const NUMBER_COUNTRY_LOADING = 10;
 
-export const CountryList: NavigationFunctionComponent = () => {
+export const CountryList: NavigationFunctionComponent = props => {
   const countries = useSelector(selectCountries);
   const skip = useSelector(selectSkipCountry);
   const dispatch = useDispatch();
@@ -31,8 +32,19 @@ export const CountryList: NavigationFunctionComponent = () => {
     }
   };
 
+  const handleSelectItem = (item: ICountry) => {
+    Navigation.push(props.componentId, {
+      component: {
+        name: SCREEN_NAME.COUNTRY_DETAIL,
+        passProps: item,
+      },
+    });
+  };
+
   const renderItem = useCallback(
-    ({item}: {item: ICountry}) => <CountryItem data={item} />,
+    ({item}: {item: ICountry}) => (
+      <CountryItem data={item} onPress={handleSelectItem} />
+    ),
     [],
   );
 
