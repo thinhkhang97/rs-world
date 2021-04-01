@@ -36,13 +36,17 @@ export const LanguageCountry: NavigationFunctionComponent<{
       <Text style={styles.title}>{name}</Text>
       <View style={styles.row}>
         <Text style={styles.label}>Countries</Text>
-        <View>
-          {language.countries.map((c: ICountry) => (
-            <TouchableOpacity key={c.id} onPress={() => handlePressCountry(c)}>
-              <Text style={styles.country}>{c.name}</Text>
-            </TouchableOpacity>
-          ))}
-        </View>
+        {language ? (
+          <View>
+            {language.countries.map((c: ICountry) => (
+              <TouchableOpacity
+                key={c.id}
+                onPress={() => handlePressCountry(c)}>
+                <Text style={styles.country}>{c.name}</Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        ) : null}
       </View>
     </SafeAreaView>
   );
