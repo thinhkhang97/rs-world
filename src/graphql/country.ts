@@ -2,6 +2,7 @@ import gql from 'graphql-tag';
 import {ApolloClient, InMemoryCache} from '@apollo/client';
 import {GRAPHQL_URI, getCountryFlagUrl} from '../config';
 import {ICountry} from '../types/country';
+import {ILanguage} from '../types/language';
 
 export const client = new ApolloClient({
   uri: GRAPHQL_URI,
@@ -25,6 +26,26 @@ const GET_COUNTRY = gql`
   }
 `;
 
+const GET_LANGUAGE = gql`
+  query getLanguage($name: String) {
+    languages(where: {name: {eq: $name}}) {
+      name
+      countries {
+        id
+        name
+        population
+        alpha2Code
+        capital {
+          name
+        }
+        languages {
+          name
+        }
+      }
+    }
+  }
+`;
+
 interface ICountryResponse {
   id: string;
 
@@ -41,6 +62,23 @@ interface ICountryResponse {
   languages: {name: string}[];
 }
 
+interface ILanguageResponse {
+  name: string;
+
+  alpha2Code: string;
+
+  countries: ICountryResponse[];
+}
+
+const fromCountryResponse = (c: ICountryResponse): ICountry => ({
+  id: c.id,
+  name: c.name,
+  population: c.population,
+  imageUrl: getCountryFlagUrl(c.alpha2Code),
+  captital: (c.capital && c.capital.name) || '',
+  languages: (c.languages || []).map(l => l.name),
+});
+
 export const getCountries = async (
   limit: number,
   skip: number,
@@ -52,17 +90,26 @@ export const getCountries = async (
     });
     const {countries} = res.data as {countries: ICountryResponse[]};
     return countries.map(
-      (c: ICountryResponse): ICountry => ({
-        id: c.id,
-        name: c.name,
-        population: c.population,
-        imageUrl: getCountryFlagUrl(c.alpha2Code),
-        captital: (c.capital && c.capital.name) || '',
-        languages: (c.languages || []).map(l => l.name),
-      }),
+      (c: ICountryResponse): ICountry => fromCountryResponse(c),
     );
   } catch (e) {
     console.log(e);
     return [];
+  }
+};
+
+export const getLanguageByName = async (
+  name: string,
+): Promise<ILanguage | undefined> => {
+  try {
+    const res = await client.query({query: GET_LANGUAGE, variables: {name}});
+    const {languages} = res.data as {languages: ILanguageResponse[]};
+    const foundLanguage = languages[0];
+    return {
+      ...foundLanguage,
+      countries: foundLanguage.countries.map(c => fromCountryResponse(c)),
+    };
+  } catch {
+    return;
   }
 };

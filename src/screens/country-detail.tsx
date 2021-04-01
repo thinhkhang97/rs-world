@@ -1,11 +1,24 @@
-import React, {useCallback} from 'react';
-import {SafeAreaView, Text, Image, View, StyleSheet} from 'react-native';
-import {NavigationFunctionComponent} from 'react-native-navigation';
+import React from 'react';
+import {
+  SafeAreaView,
+  Text,
+  Image,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+} from 'react-native';
+import {NavigationFunctionComponent, Navigation} from 'react-native-navigation';
 import {ICountry} from '../types/country';
 import {COLOR} from '../assets/themes';
+import {SCREEN_NAME} from '../navigations';
 
 export const CountryDetail: NavigationFunctionComponent<ICountry> = props => {
   const {name, captital, population, imageUrl, languages} = props;
+  const handlePressLanguage = (name: string) => {
+    Navigation.push(props.componentId, {
+      component: {name: SCREEN_NAME.LANGUAGE_COUNTRY, passProps: {name}},
+    });
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Image source={{uri: imageUrl}} style={styles.image} />
@@ -23,9 +36,9 @@ export const CountryDetail: NavigationFunctionComponent<ICountry> = props => {
           <Text style={styles.title}>Languages</Text>
           <View style={styles.language}>
             {languages.map((l: string) => (
-              <Text key={l} style={styles.languageItem}>
-                {l}
-              </Text>
+              <TouchableOpacity key={l} onPress={() => handlePressLanguage(l)}>
+                <Text style={styles.languageItem}>{l}</Text>
+              </TouchableOpacity>
             ))}
           </View>
         </View>

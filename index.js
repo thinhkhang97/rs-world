@@ -16,9 +16,8 @@ Navigation.registerComponent(SCREEN_NAME.MAIN, () => props =>
   includeProvider(CountryList, props),
 );
 Navigation.registerComponent(SCREEN_NAME.COUNTRY_DETAIL, () => CountryDetail);
-Navigation.registerComponent(
-  SCREEN_NAME.LANGUAGE_COUNTRY,
-  () => LanguageCountry,
+Navigation.registerComponent(SCREEN_NAME.LANGUAGE_COUNTRY, () => props =>
+  includeProvider(LanguageCountry, props),
 );
 Navigation.events().registerAppLaunchedListener(() => {
   Navigation.setRoot({

@@ -1,4 +1,4 @@
-import {ICountry} from 'types/country';
+import {ICountry} from '../../types/country';
 
 export enum CountryActionTypeEnum {
   GET_COUNTRY = 'COUNTRY_ACTION/GET_COUNTRY',
@@ -8,7 +8,6 @@ export enum CountryActionTypeEnum {
 export type GetCountryActionType = {
   limit: number;
   skip: number;
-
   type: CountryActionTypeEnum.GET_COUNTRY;
 };
 
