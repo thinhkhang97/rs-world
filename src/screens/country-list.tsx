@@ -1,34 +1,34 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {SafeAreaView, FlatList, StyleSheet} from 'react-native';
-import {NavigationFunctionComponent, Navigation} from 'react-native-navigation';
-import {SCREEN_NAME} from '../navigations';
-import {ICountry} from 'types';
+import {NavigationFunctionComponent} from 'react-native-navigation';
+import {ICountry} from '../types/country';
 import {CountryItem} from '../components/country-item';
 import {COLOR} from '../assets/themes';
+import {useSelector, useDispatch} from 'react-redux';
+import {selectCountries} from '../selectors/country';
+import {getCountryAction} from '../actions/country';
 
-const tempData: ICountry[] = [
-  {
-    imageUrl:
-      'https://i.pinimg.com/originals/95/1a/53/951a535c499f0b7c5511bf4bead09d2a.gif',
-    name: 'Vietnam',
-    captital: 'Hanoi',
-  },
-];
+export const CountryList: NavigationFunctionComponent = () => {
+  const countries = useSelector(selectCountries);
+  const dispatch = useDispatch();
 
-export const CountryList: NavigationFunctionComponent = props => {
-  const handleGoToDetail = () => {
-    Navigation.push(props.componentId, {
-      component: {
-        name: SCREEN_NAME.COUNTRY_DETAIL,
-      },
-    });
-  };
+  useEffect(() => {
+    dispatch(getCountryAction(10, 0));
+  }, []);
 
   const renderItem = ({item}: {item: ICountry}) => <CountryItem data={item} />;
 
+  const keyExtract = (item: ICountry) => `countries_id_${item.id}`;
+
   return (
     <SafeAreaView style={styles.container}>
-      <FlatList style={styles.list} data={tempData} renderItem={renderItem} />
+      <FlatList
+        style={styles.list}
+        data={countries}
+        renderItem={renderItem}
+        keyExtractor={keyExtract}
+        extraData={countries}
+      />
     </SafeAreaView>
   );
 };

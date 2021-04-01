@@ -1,6 +1,6 @@
 import React from 'react';
 import {TouchableOpacity, View, Image, Text, StyleSheet} from 'react-native';
-import {ICountry} from 'types';
+import {ICountry} from '../types/country';
 import {COLOR} from '../assets/themes';
 
 interface Props {
