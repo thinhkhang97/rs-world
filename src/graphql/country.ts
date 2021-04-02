@@ -41,6 +41,7 @@ const GET_LANGUAGE = gql`
           name
         }
         languages {
+          id
           name
         }
       }

@@ -23,18 +23,15 @@ export const LanguageCountry: React.FC = () => {
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<any>>();
   const [language, setLanguage] = useState<ILanguage>();
-
+  const id = route.params ? (route.params as any).id : '0';
+  const [foundLanguage] = languages.filter(l => l.id === id);
   useEffect(() => {
-    if (route.params) {
-      const {id} = route.params as {id: string};
-      const [language] = languages.filter(l => l.id === id);
-      if (language) {
-        setLanguage(language);
-      } else {
-        dispatch(getLanguageByIdAction(id));
-      }
+    if (foundLanguage) {
+      setLanguage(foundLanguage);
+    } else {
+      dispatch(getLanguageByIdAction(id));
     }
-  }, [route.params, languages]);
+  }, [id, languages, foundLanguage, language]);
 
   const handlePressCountry = (c: ICountry) => {
     navigation.push(SCREEN_NAME.COUNTRY_DETAIL, c);
