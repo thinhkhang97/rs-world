@@ -15,19 +15,26 @@ import {COLOR} from '../assets/themes';
 import {SCREEN_NAME} from '../navigation';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
+import {ILanguage} from '../types/language';
 
 export const LanguageCountry: React.FC = () => {
   const dispatch = useDispatch();
-  const [language] = useSelector(selectLanguages);
+  const languages = useSelector(selectLanguages);
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<any>>();
+  const [language, setLanguage] = useState<ILanguage>();
 
   useEffect(() => {
     if (route.params) {
       const {id} = route.params as {id: string};
-      dispatch(getLanguageByIdAction(id));
+      const [language] = languages.filter(l => l.id === id);
+      if (language) {
+        setLanguage(language);
+      } else {
+        dispatch(getLanguageByIdAction(id));
+      }
     }
-  }, []);
+  }, [route.params, languages]);
 
   const handlePressCountry = (c: ICountry) => {
     navigation.push(SCREEN_NAME.COUNTRY_DETAIL, c);
