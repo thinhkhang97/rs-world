@@ -1,9 +1,9 @@
 import {LanguageActionType, LanguageActionTypeEnum} from './type/language';
 import {ILanguage} from '../types/language';
 
-export const getLanguageByNameAction = (name: string): LanguageActionType => {
+export const getLanguageByIdAction = (id: string): LanguageActionType => {
   return {
-    name,
+    id,
     type: LanguageActionTypeEnum.GET_LANGUAGE,
   };
 };

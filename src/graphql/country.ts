@@ -20,6 +20,7 @@ const GET_COUNTRY = gql`
         name
       }
       languages {
+        id
         name
       }
     }
@@ -27,8 +28,9 @@ const GET_COUNTRY = gql`
 `;
 
 const GET_LANGUAGE = gql`
-  query getLanguage($name: String) {
-    languages(where: {name: {eq: $name}}) {
+  query getLanguage($id: String) {
+    languages(where: {id: {eq: $id}}) {
+      id
       name
       countries {
         id
@@ -59,10 +61,12 @@ interface ICountryResponse {
     name: string;
   };
 
-  languages: {name: string}[];
+  languages: {id: string; name: string}[];
 }
 
 interface ILanguageResponse {
+  id: string;
+
   name: string;
 
   alpha2Code: string;
@@ -76,7 +80,7 @@ const fromCountryResponse = (c: ICountryResponse): ICountry => ({
   population: c.population,
   imageUrl: getCountryFlagUrl(c.alpha2Code),
   captital: (c.capital && c.capital.name) || '',
-  languages: (c.languages || []).map(l => l.name),
+  languages: c.languages || [],
 });
 
 export const getCountries = async (
@@ -98,11 +102,11 @@ export const getCountries = async (
   }
 };
 
-export const getLanguageByName = async (
-  name: string,
+export const getLanguageById = async (
+  id: string,
 ): Promise<ILanguage | undefined> => {
   try {
-    const res = await client.query({query: GET_LANGUAGE, variables: {name}});
+    const res = await client.query({query: GET_LANGUAGE, variables: {id}});
     const {languages} = res.data as {languages: ILanguageResponse[]};
     const foundLanguage = languages[0];
     return {

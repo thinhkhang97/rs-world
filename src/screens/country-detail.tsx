@@ -33,8 +33,8 @@ export const CountryDetail: React.FC = props => {
   }
 
   const {name, captital, population, imageUrl, languages} = data;
-  const handlePressLanguage = (name: string) => {
-    navigation.push(SCREEN_NAME.LANGUAGE_COUNTRY, {name});
+  const handlePressLanguage = (id: string) => {
+    navigation.push(SCREEN_NAME.LANGUAGE_COUNTRY, {id});
   };
   return (
     <SafeAreaView style={styles.container}>
@@ -52,9 +52,11 @@ export const CountryDetail: React.FC = props => {
         <View style={styles.row}>
           <Text style={styles.title}>Languages</Text>
           <View style={styles.language}>
-            {languages.map((l: string) => (
-              <TouchableOpacity key={l} onPress={() => handlePressLanguage(l)}>
-                <Text style={styles.languageItem}>{l}</Text>
+            {languages.map(({name, id}) => (
+              <TouchableOpacity
+                key={id}
+                onPress={() => handlePressLanguage(id)}>
+                <Text style={styles.languageItem}>{name}</Text>
               </TouchableOpacity>
             ))}
           </View>

@@ -9,7 +9,11 @@ export interface ICountry {
 
   population: number;
 
-  languages: string[];
+  languages: {
+    id: string;
+
+    name: string;
+  }[];
 }
 
 export interface ICountryState {

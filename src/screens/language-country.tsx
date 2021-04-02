@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectLanguages} from '../selectors/language';
-import {getLanguageByNameAction} from '../actions/language';
+import {getLanguageByIdAction} from '../actions/language';
 import {ICountry} from '../types/country';
 import {COLOR} from '../assets/themes';
 import {SCREEN_NAME} from '../navigation';
@@ -21,14 +21,11 @@ export const LanguageCountry: React.FC = () => {
   const [language] = useSelector(selectLanguages);
   const route = useRoute();
   const navigation = useNavigation<StackNavigationProp<any>>();
-  const [name, setName] = useState('');
 
   useEffect(() => {
     if (route.params) {
-      const {name} = route.params as {name: string};
-      console.log(name);
-      setName(name);
-      dispatch(getLanguageByNameAction(name));
+      const {id} = route.params as {id: string};
+      dispatch(getLanguageByIdAction(id));
     }
   }, []);
 
@@ -39,7 +36,7 @@ export const LanguageCountry: React.FC = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.container}>
-        <Text style={styles.title}>{name}</Text>
+        <Text style={styles.title}>{language ? language.name : ''}</Text>
         <View style={styles.row}>
           <Text style={styles.label}>Countries</Text>
           {language ? (

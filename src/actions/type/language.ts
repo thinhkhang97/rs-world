@@ -5,8 +5,8 @@ export enum LanguageActionTypeEnum {
   ADD_LANGUAGE = 'LANGUAGE_ACTION/ADD_LANGUAGE',
 }
 
-export type GetLanguageByNameActionType = {
-  name: string;
+export type GetLanguageByIdActionType = {
+  id: string;
   type: LanguageActionTypeEnum.GET_LANGUAGE;
 };
 
@@ -16,5 +16,5 @@ export type AddLanguageActionType = {
 };
 
 export type LanguageActionType =
-  | GetLanguageByNameActionType
+  | GetLanguageByIdActionType
   | AddLanguageActionType;

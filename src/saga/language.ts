@@ -1,21 +1,21 @@
 import {select, put, takeEvery} from 'redux-saga/effects';
 import {
-  GetLanguageByNameActionType,
+  GetLanguageByIdActionType,
   LanguageActionTypeEnum,
 } from '../actions/type/language';
 import {selectLanguages} from '../selectors/language';
 import {ILanguage} from '../types/language';
-import {getLanguageByName} from '../graphql/country';
+import {getLanguageById} from '../graphql/country';
 import {addLanguageAction} from '../actions/language';
 
-function* getLanguage(action: GetLanguageByNameActionType) {
-  const {name} = action;
+function* getLanguage(action: GetLanguageByIdActionType) {
+  const {id} = action;
   const languages: ILanguage[] = yield select(selectLanguages);
-  const exist = languages.some(l => l.name === name);
+  const exist = languages.some(l => l.name === id);
   if (exist) {
     return;
   }
-  const language = yield getLanguageByName(name);
+  const language = yield getLanguageById(id);
   if (!language) {
     return;
   }
