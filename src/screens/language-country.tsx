@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -7,29 +7,33 @@ import {
   TouchableOpacity,
   ScrollView,
 } from 'react-native';
-import {NavigationFunctionComponent, Navigation} from 'react-native-navigation';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectLanguages} from '../selectors/language';
 import {getLanguageByNameAction} from '../actions/language';
 import {ICountry} from '../types/country';
 import {COLOR} from '../assets/themes';
-import {SCREEN_NAME} from '../navigations';
+import {SCREEN_NAME} from '../navigation';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-export const LanguageCountry: NavigationFunctionComponent<{
-  name: string;
-}> = props => {
-  const {name} = props;
+export const LanguageCountry: React.FC = () => {
   const dispatch = useDispatch();
   const [language] = useSelector(selectLanguages);
+  const route = useRoute();
+  const navigation = useNavigation<StackNavigationProp<any>>();
+  const [name, setName] = useState('');
 
   useEffect(() => {
-    dispatch(getLanguageByNameAction(name));
+    if (route.params) {
+      const {name} = route.params as {name: string};
+      console.log(name);
+      setName(name);
+      dispatch(getLanguageByNameAction(name));
+    }
   }, []);
 
   const handlePressCountry = (c: ICountry) => {
-    Navigation.push(props.componentId, {
-      component: {name: SCREEN_NAME.COUNTRY_DETAIL, passProps: c},
-    });
+    navigation.push(SCREEN_NAME.COUNTRY_DETAIL, c);
   };
 
   return (

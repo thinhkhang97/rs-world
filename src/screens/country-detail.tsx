@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   SafeAreaView,
   Text,
@@ -7,17 +7,34 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from 'react-native';
-import {NavigationFunctionComponent, Navigation} from 'react-native-navigation';
 import {ICountry} from '../types/country';
 import {COLOR} from '../assets/themes';
-import {SCREEN_NAME} from '../navigations';
+import {SCREEN_NAME} from '../navigation';
+import {useRoute, useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
 
-export const CountryDetail: NavigationFunctionComponent<ICountry> = props => {
-  const {name, captital, population, imageUrl, languages} = props;
+export const CountryDetail: React.FC = props => {
+  const route = useRoute();
+  const [data, setData] = useState<ICountry>();
+  const navigation = useNavigation<StackNavigationProp<any>>();
+
+  useEffect(() => {
+    if (route.params) {
+      setData(route.params as ICountry);
+    }
+  }, []);
+
+  if (!data) {
+    return (
+      <SafeAreaView>
+        <Text>No data</Text>
+      </SafeAreaView>
+    );
+  }
+
+  const {name, captital, population, imageUrl, languages} = data;
   const handlePressLanguage = (name: string) => {
-    Navigation.push(props.componentId, {
-      component: {name: SCREEN_NAME.LANGUAGE_COUNTRY, passProps: {name}},
-    });
+    navigation.push(SCREEN_NAME.LANGUAGE_COUNTRY, {name});
   };
   return (
     <SafeAreaView style={styles.container}>

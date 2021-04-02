@@ -1,19 +1,21 @@
 import React, {useEffect, useCallback} from 'react';
 import {SafeAreaView, FlatList, StyleSheet} from 'react-native';
-import {NavigationFunctionComponent, Navigation} from 'react-native-navigation';
 import {ICountry} from '../types/country';
 import {CountryItem} from '../components/country-item';
 import {COLOR} from '../assets/themes';
 import {useSelector, useDispatch} from 'react-redux';
 import {selectCountries, selectSkipCountry} from '../selectors/country';
 import {getCountryAction} from '../actions/country';
-import {SCREEN_NAME} from '../navigations';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import {SCREEN_NAME} from '../navigation';
 
 const NUMBER_COUNTRY_LOADING = 10;
 
-export const CountryList: NavigationFunctionComponent = props => {
+export const CountryList: React.FC = props => {
   const countries = useSelector(selectCountries);
   const skip = useSelector(selectSkipCountry);
+  const navigation = useNavigation<StackNavigationProp<any>>();
   const dispatch = useDispatch();
   let reachEnd = false;
 
@@ -33,12 +35,7 @@ export const CountryList: NavigationFunctionComponent = props => {
   };
 
   const handleSelectItem = (item: ICountry) => {
-    Navigation.push(props.componentId, {
-      component: {
-        name: SCREEN_NAME.COUNTRY_DETAIL,
-        passProps: item,
-      },
-    });
+    navigation.navigate(SCREEN_NAME.COUNTRY_DETAIL, item);
   };
 
   const renderItem = useCallback(
